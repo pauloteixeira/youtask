@@ -1,0 +1,285 @@
+<div class="">
+    <div class="row">
+        <div class="container">
+            <h1><%= title %></h1>
+            <hr/>
+
+            <div class="panel panel-default panel-table">
+                <div class="panel-heading">
+                      <form id="task_list-delete-form-<%= task.id %>" name="<%= task.id %>" action="/project/delete" method="post">
+                        <input type="hidden" id="_csrf" name="_csrf" value="<%- _csrf %>" />
+                        <input type="hidden" id="project_id" name="project" value="<%= task.project.id %>" />
+                        <input type="hidden" id="owner_id" name="owner" value="<%= task.owner.id %>" />
+                        <input type="hidden" id="task_id" name="id" value="<%= task.id %>" />
+                        <input type="hidden" id="real_effort" name="real_effort" value="<%= (task.real_effort) ? task.real_effort : 0 %>" />
+                        <input type="hidden" id="estimated_effort" name="estimated_effort" value="<%= (task.estimated_effort) ? task.estimated_effort : 0 %>" />
+
+                        <a href="/task/new/<%= task.project.id %>" class="btn btn-sm btn-default btn-create"><i class="fa fa-plus"></i> Novo</a>
+                        <a href="/task/edit/<%= task.project.id %>/<%= task.id %>" class="btn btn-sm btn-default btn-create"><i class="fa fa-pencil"></i> Editar</a>
+                        <a id="task-delete" href="javascript://void(0)" class="btn btn-sm btn-default btn-create" onclick="removeTask('task_list-delete-form-<%= task.id %>')"><i class="fa fa-trash"></i> Apagar</a>
+                        <a href="/task/p/<%= task.project.id %>" class="btn btn-sm btn-default btn-create"><i class="fa fa-plus"></i> Lista de Tarefas</a>
+                    </form>
+                    <a href="javascript://void(0)" id="pin-comment" name="pin-comment" class="btn btn-sm btn-default btn-create" title="Ver comentários da tarefa" alt="Ver comentários da tarefa"><i class="fa fa-comment"></i></a>
+                    <a href="javascript://void(0)" id="pin-effort" name="pin-effort" class="btn btn-sm btn-default btn-create" title="Ver apontamentos da tarefa" alt="Ver apontamentos da tarefa"><i class="fa fa-dashboard"></i></a>
+                    <div class="dropdown" style="float: right;">
+                        <a id="dropdownMenuButton" class="btn btn-sm btn-default btn-create dropdown-toggle" href="javascript:://void(0)" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bullseye"></i> <%= task.status.name %></a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                           <% _.each( status, function (st) { %>
+                               <a name="items-state" class="dropdown-item" task_value="<%= task.id %>" status_value="<%= st.id %>"><%= st.name %></a>
+                           <% }); %>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-6 margin-text">
+                                    <strong>Título da Tarefa</strong>
+                                    <p><%= task.title %></p>
+                                </div>
+                                
+                                <div class="col-md-6 margin-text">
+                                    <div class="pull-right">
+                                        <% if( task.status.code == 3 ) { %>
+                                            <button id="aprovar-task" type="button" class="btn btn-success" status_value="<%= mapStatus[3][0] %>"><i class="fa fa-tasks"></i> Aprovar</button>
+                                            <button id="reprovar-task" type="button" class="btn btn-danger" status_value="<%= mapStatus[3][1] %>"><i class="fa fa-tasks"></i> Reprovar</button>
+                                        <% } %>
+                                        <% if( task.status.code == 2 ) { %>
+                                            <button id="atender-task" type="button" class="btn btn-success" status_value="<%= mapStatus[2] %>"><i class="fa fa-tasks"></i> Atender</button>
+                                        <% } if( task.status.code == 1 ) { %>
+                                            <button id="solicitar-task" type="button" class="btn btn-dark" status_value="<%= mapStatus[1] %>"><i class="fa fa-tasks"></i> Solicitar Aprovação</button>
+                                            <button id="comment-task" type="button" class="btn btn-dark"><i class="fa fa-tasks"></i> Comentar</button>
+                                            <button id="effort-task" type="button" class="btn btn-danger"><i class="fa fa-calculator"></i> Esforço</button>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <!-- BEGIN: right informations -->
+                                <div class="col-md-6 margin-text">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <strong>Nome do Projeto</strong>
+                                            <p><%- task.project.name %></p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <strong>Descrição da Tarefa</strong>
+                                            <p><%- (task.body) ? task.body : '<p>N/A</p>' %></p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <strong>Executor da Tarefa</strong>
+                                            <p><%- (task.executor) ? task.executor.name : '<p>N/A</p>' %></p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <strong>Considerações Finais da Tarefa</strong>
+                                            <p><%- (task.last_informations) ? task.last_informations : '<p>N/A</p>' %></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- END: right informations -->
+
+                                <!-- BEGIN: left informations -->
+                                <div class="col-md-6 bg-detail margin-text">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <strong><i class="fa fa-calendar"></i> Estimativa</strong>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <strong>Início Estimado</strong>
+                                            <p><%= moment(task.estimated_start).format('DD/MM/YYYY') %></p>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <strong><i class="fa fa-dashboard"></i> Esforço</strong>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <strong>Esforço Estimado</strong>
+                                            <p><%= task.estimated_effort + ' Horas' %></p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <strong>Esforço Realizado</strong>
+                                            <p id="real_effort_label"><%= task.real_effort + ' Horas' %></p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <strong>Percentual de Progresso</strong>
+                                            <div class="progress">
+                                              <div id="progress_bar" class="progress-bar bg-success" role="progressbar" style="width: <%= task.progress_percentage + '%' %>" aria-valuenow="<%= task.progress_percentage %>" aria-valuemin="0" aria-valuemax="100"><p id="progress_percentage"><%= task.progress_percentage + '%' %></p></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- END: left informations -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- BEGIN: MODAL COMMENT -->
+<div id="modal-comment-task" class="modal hide fade modal-lg modal-center" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header modal-header-info">
+                <div class="row">
+                    <div class="col col-md-10">
+                        <h5 class="modal-title pull-left">Comentário sobre a tarefa</h5>
+                    </div>
+                    <div class="col col-md-2">
+                        <a id="modal-close" href="javascript://void(0)" class="pull-right" data-dismiss="modal" aria-label="Close">
+                          <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+              </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="input-group">
+                            <div class="col-md-12">
+                              <div class="form-group">
+                                  <h4>Comentar Tarefa</h4>
+                                  <form id="task_comment-form-<%= task.id %>" name="<%= task.id %>" method="post">
+                                      <input type="hidden" id="_csrf-comment" name="_csrf" value="<%- _csrf %>" />
+                                      <input type="hidden" id="comment-task_id" name="comment-task_id" value="<%= task.id %>" />
+                                      <textarea id="comment" name="comment" class="form-control" placeholder="Comentar a tarefa"></textarea>
+                                  </form>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <button id="bt-comment-task" type="button" class="btn btn-outline-info btn-block">Enviar Comentário</button>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <span>
+                    <button type="button" data-dismiss="modal" class="btn btn-outline-danger">Fechar</button>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END: MODAL COMMENT -->
+
+<!-- BEGIN: MODAL EFFORT -->
+<div id="modal-effort-task" class="modal hide fade modal-lg modal-center" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header modal-header-info">
+                <div class="row">
+                    <div class="col col-md-10">
+                        <h5 class="modal-title pull-left">Adicione o seu esforço atual à tarefa</h5>
+                    </div>
+                    <div class="col col-md-2">
+                        <a id="modal-close" href="javascript://void(0)" class="pull-right" data-dismiss="modal" aria-label="Close">
+                          <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+              </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="input-group">
+                            <div class="col-md-12">
+                              <div class="form-group">
+                                  <h4>Esforço Atual</h4>
+                                  <form id="task_effort-form-<%= task.id %>" name="<%= task.id %>" method="post">
+                                      <input type="hidden" id="_csrf-effort" name="_csrf" value="<%- _csrf %>" />
+                                      <input type="hidden" id="effort-task_id" name="effort-task_id" value="<%= task.id %>" />
+                                      <input id="effort" name="effort" class="form-control" placeholder="0" type="number"/>
+                                  </form>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <button id="bt-effort-task" type="button" class="btn btn-outline-info btn-block">Enviar Esforço</button>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <span>
+                    <button type="button" data-dismiss="modal" class="btn btn-outline-danger">Fechar</button>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END: MODAL EFFORT -->
+
+<!-- BEGIN: MODAL PINS -->
+<div id="modal-pins" class="modal hide fade modal-lg modal-center" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header modal-header-info">
+                <div class="row">
+                    <div class="col col-md-10">
+                        <h5 id="title-modal-pin" class="modal-title pull-left"></h5>
+                    </div>
+                    <div class="col col-md-2">
+                        <a id="modal-close" href="javascript://void(0)" class="pull-right" data-dismiss="modal" aria-label="Close">
+                          <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+              </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-bordered table-hover">
+                          <thead>
+                            <tr>
+                              <th scope="col" width="150px">Owner</th>
+                              <th scope="col">Valores</th>
+                              <th scope="col">Data</th>
+                            </tr>
+                          </thead>
+                          <tbody id="data-table">
+
+                          </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span>
+                    <button type="button" data-dismiss="modal" class="btn btn-outline-danger">Fechar</button>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END: MODAL PINS -->
+
+<script src="/services/TaskService.js"></script>
+<script src="/handler/task.handler.js"></script>

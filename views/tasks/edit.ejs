@@ -1,0 +1,108 @@
+<div class="">
+    <div class="row" v-if="!cloudSuccess">
+        <div class="container">
+            <h1><%= title %></h1>
+            <hr/>
+            <form id="task-form" action="/task/update" method="post">
+
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label for="name">Título da Tarefa</label>
+                      <input class="form-control" id="title" name="title" type="text" maxlength="150" placeholder="Digite o título da tarefa" value="<%= task.title %>">
+                      <div id="v-title" class="invalid-feedback">Este campo é obrigatório.</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="body">Descrição da Tarefa</label>
+                        <textarea id="body" name="body" class="form-control" placeholder="Detalhe a tarefa"><%= task.body %></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-4 col-xs-12 col-sm-12">
+                    <div class="form-group">
+                      <label for="owner">Dono da Tarefa</label>
+                      <input class="form-control" id="owner" name="owner" type="text" maxlength="150" value="<%= task.owner.name %>" readonly>
+                    </div>
+                  </div>
+                  <div class="col-md-4 col-xs-12 col-sm-12">
+                    <div class="form-group">
+                      <label for="executor">Executor da Tarefa</label>
+                      <select class="form-control" id="executor" name="executor">
+                          <option>Selecione uma opção</option>
+                          <% _.each( users, function (user) { %>
+                              <option value="<%= user.id %>"  <%= (task.executor) ? (user.id == task.executor.id) ? 'selected' : '' : '' %>><%= user.name %></option>
+                          <% }); %>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-4 col-xs-12 col-sm-12">
+                    <div class="form-group">
+                      <label for="status">Status da Tarefa</label>
+                      <select class="form-control" id="status" name="status">
+                          <option>Selecione uma opção</option>
+                          <% _.each( status, function (st) { %>
+                              <option value="<%= st.id %>"  <%= (st.id == task.status.id) ? 'selected' : '' %>><%= st.name %></option>
+                          <% }); %>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 col-xs-12 col-sm-12">
+                      <div class="form-group">
+                        <label for="estimated_start">Estimativa de Início</label>
+                        <input class="form-control date-input" id="estimated_start" name="estimated_start" type="text" placeholder="__/__/__" value="<%= (task.estimated_start) ? moment(task.estimated_start).format('DD/MM/YYYY') : '' %>">
+                        <div id="v-estimated_start" class="invalid-feedback">Este campo precisa ter uma data válida.</div>
+                      </div>
+                    </div>
+                    <div class="col-md-4 col-xs-12 col-sm-12">
+                      <div class="form-group">
+                        <label for="estimated_effort">Estimativa de Esforço</label>
+                        <input class="form-control" id="estimated_effort" name="estimated_effort" type="number" placeholder="0" value="<%= task.estimated_effort %>">
+                      </div>
+                    </div>
+                    <div class="col-md-4 col-xs-12 col-sm-12">
+                      <div class="form-group">
+                        <label for="real_effort">Esforço Real</label>
+                        <input class="form-control" id="real_effort" name="real_effort" type="number" placeholder="0" value="<%= task.real_effort %>">
+                      </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="last_informations">Considerações Finais</label>
+                        <textarea class="form-control" id="last_informations" name="last_informations" placeholder="Digite as considerações finais da tarefa"><%= task.last_informations %></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-12">
+                      <hr />
+                    <div class="form-group text-right">
+                        <input type="hidden" name="owner" value="<%= req.session.userId %>" />
+                        <input type="hidden" name="project" value="<%= task.project.id %>" />
+                        <input type="hidden" name="id" value="<%= task.id %>" />
+                        <input type="hidden" name="_csrf" value="<%- _csrf %>" />
+                        <a class="btn btn-outline-danger" href="javascript://void(0)" onclick="history.back()">Cancel</a>
+                        <button type="submit" class="btn btn-dark">Salvar</button>
+                    </div>
+                  </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="/services/UserService.js"></script>
+<script src="/services/TaskService.js"></script>
+<script src="/handler/task.handler.js"></script>

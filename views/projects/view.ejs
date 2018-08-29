@@ -1,0 +1,274 @@
+<div class="">
+    <div class="row" v-if="!cloudSuccess">
+        <div class="container">
+            <h1><%= title %></h1>
+            <hr/>
+
+            <div class="panel panel-default panel-table">
+                <div class="panel-heading">
+                    <div class="row">
+                         <div class="col col-md-12">
+                             <form id="project-view-delete-form" name="<%= project.id %>" action="/project/delete" method="post">
+                                <input type="hidden" id="_csrf" name="_csrf" value="<%- _csrf %>" />
+                                <input type="hidden" id="project_id" name="id" value="<%= project.id %>" />
+                                <input type="hidden" id="owner_id" name="owner_id" value="<%= project.owner.id %>" />
+
+                                <a href="/project/new" class="btn btn-sm btn-default btn-create"><i class="fa fa-plus"></i> Novo</a>
+                                <a href="/project/edit/<%= project.id %>" class="btn btn-sm btn-default btn-create"><i class="fa fa-pencil"></i> Editar</a>
+                                <a id="project-delete" href="javascript://void(0)" class="btn btn-sm btn-default btn-create"><i class="fa fa-trash"></i> Apagar</a>
+                                <a id="buscar-membros-time" href="javascript://void(0)" class="btn btn-sm btn-default btn-create"><i class="fa fa-users"></i> Equipe</a>
+                                <div class="dropdown" style="float: right;">
+                                    <a id="dropdownMenuButton" class="btn btn-sm btn-default btn-create dropdown-toggle" href="javascript:://void(0)" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bullseye"></i> <%= project.state.name %></a>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                       <% _.each( states, function (state) { %>
+                                           <a name="items-state" class="dropdown-item" project_value="<%= project.id %>" state_value="<%= state.id %>"><%= state.name %></a>
+                                       <% }); %>
+                                    </div>
+                                </div>
+                             </form>
+                         </div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-8 margin-text">
+                                    <strong>Nome do Projeto</strong>
+                                    <p><%= project.name %></p>
+                                </div>
+                                <div class="col-md-4 margin-text">
+                                    <button type="button" class="btn btn-dark" onclick="location.href='/task/p/<%= project.id %>';"><i class="fa fa-tasks"></i> Ver Tarefas</button>
+                                    <button type="button" class="btn btn-danger" onclick="projectCalculate('<%= project.id %>')"><i class="fa fa-calculator"></i> Calcular Projeto</button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <!-- right informations -->
+                                <div class="col-md-6 margin-text">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <strong>Descrição do Projeto</strong>
+                                            <p><%- project.description %></p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <strong>Justificativas do Projeto</strong>
+                                            <p><%- (project.justification) ? project.justification : '<p>N/A</p>' %></p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <strong>Premissas do Projeto</strong>
+                                            <p><%- (project.premisse) ? project.premisse : '<p>N/A</p>' %></p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <strong>Restrições do Projeto</strong>
+                                            <p><%- (project.restrictions) ? project.restrictions : '<p>N/A</p>' %></p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <strong>Considerações Finais do Projeto</strong>
+                                            <p><%- (project.last_informations) ? project.last_informations : '<p>N/A</p>' %></p>
+                                        </div>
+                                    </div>
+                                    <% if( tasks ){ %>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <strong><i class="fa fa-tasks"></i> Tarefas abertas</strong>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <table class="table table-bordered table-hover">
+                                              <thead>
+                                                <tr>
+                                                  <th scope="col">Tarefa</th>
+                                                  <th scope="col" width="160px">Status</th>
+                                                </tr>
+                                              </thead>
+                                              <tbody id="tasks-table">
+                                                <% _.each( tasks, function (task) { %>
+                                                    <tr id="td_<%= task.id %>">
+                                                      <td>
+                                                          <a href="/task/<%= task.id %>"><%= task.title %></a>
+                                                      </td>
+                                                      <td>
+                                                          <center><%= task.status.name %></center>
+                                                      </td>
+                                                    </tr>
+                                                <% }); %>
+                                              </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <% } %>
+                                </div>
+
+                                <!-- left informations -->
+                                <div class="col-md-6 bg-detail margin-text">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <strong><i class="fa fa-calendar"></i> Estimativa</strong>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <strong>Início Estimado</strong>
+                                            <p><%= moment(project.estimated_start).format('DD/MM/YYYY') %></p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <strong>Final Estimado</strong>
+                                            <p><%= moment(project.estimated_end).format('DD/MM/YYYY') %></p>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <strong>Início Estimado</strong>
+                                            <p><%= (project.real_start) ? moment(project.real_start).format('DD/MM/YYYY') : 'N/A' %></p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <strong>Final Estimado</strong>
+                                            <p><%= (project.real_end) ? moment(project.real_end).format('DD/MM/YYYY') : 'N/A' %></p>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <strong><i class="fa fa-dashboard"></i> Esforço</strong>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <strong>Total de Horas</strong>
+                                            <p id="total_hours"><%= project.total_hours %></p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Horas Utilizadas</strong>
+                                            <p id="amount_spent"><%= project.amount_spent %></p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Progresso</strong>
+                                            <div class="progress">
+                                              <div id="progress_bar" class="progress-bar bg-danger" role="progressbar" style="width: <%= project.progress_percentage + '%' %>" aria-valuenow="<%= project.progress_percentage %>" aria-valuemin="0" aria-valuemax="100"><p id="progress_percentage"><%= project.progress_percentage + '%' %></p></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <strong><i class="fa fa-users"></i> Time</strong>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <table class="table table-bordered table-hover">
+                                              <thead>
+                                                <tr>
+                                                  <th scope="col" width="50px">
+                                                      #
+                                                  </th>
+                                                  <th scope="col">Membro</th>
+                                                </tr>
+                                              </thead>
+                                              <tbody id="member-table">
+                                                <% _.each( teams, function (item) { %>
+                                                    <tr id="td_<%= item.member.id %>">
+                                                      <th scope="row">
+                                                          <button name="bt-remove-member" data-id="<%= item.member.id %>" onclick="removeMember('"+item.member.id+"')" type="button" class="btn btn-sm btn-outline-danger btn-create"><i class="fa fa-trash"></i></button>
+                                                      </th>
+                                                      <td><%= item.member.name %></td>
+                                                    </tr>
+                                                <% }); %>
+                                              </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- BEGIN: MODAL SEARCH USERS -->
+<div id="modal-team" class="modal hide fade modal-lg modal-center" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header modal-header-info">
+                <div class="row">
+                    <div class="col col-md-10">
+                        <h5 class="modal-title pull-left">Buscar membros para o time</h5>
+                    </div>
+                    <div class="col col-md-2">
+                        <a id="modal-close" href="javascript://void(0)" class="pull-right" data-dismiss="modal" aria-label="Close">
+                          <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+              </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="input-group">
+                          <select id="users-members" class="custom-select" aria-label="Seleção de membros">
+                            <option selected>Selecione um membro para o time</option>
+                          </select>
+                          <div class="input-group-append">
+                            <button id="add-member" class="btn btn-outline-secondary" type="button"><i class="fa fa-plus-square"></i></button>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row"><hr /></div>
+                <div class="row">
+                    <div class="col col-md-12">
+                        <table class="table table-bordered table-hover">
+                          <thead>
+                            <tr>
+                              <th scope="col" width="50px">
+                                  #
+                              </th>
+                              <th scope="col">Membro</th>
+                            </tr>
+                          </thead>
+                          <tbody id="member-table">
+                            <% _.each( teams, function (item) { %>
+                                <tr id="td_<%= item.member.id %>">
+                                  <th scope="row">
+                                      <button name="bt-remove-member" data-id="<%= item.member.id %>" onclick="removeMember('"+item.member.id+"')" type="button" class="btn btn-sm btn-outline-danger btn-create"><i class="fa fa-trash"></i></button>
+                                  </th>
+                                  <td><%= item.member.name %></td>
+                                </tr>
+                            <% }); %>
+                          </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span>
+                    <button type="button" data-dismiss="modal" class="btn btn-outline-danger">Fechar</button>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END: MODAL SEARCH USERS -->
+
+<script src="/services/UserService.js"></script>
+<script src="/services/TaskService.js"></script>
+<script src="/services/ProjectService.js"></script>
+<script src="/handler/project.handler.js"></script>

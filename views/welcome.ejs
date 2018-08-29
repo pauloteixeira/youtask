@@ -1,0 +1,56 @@
+<div class="row">
+    <div class="container">
+        <h1><%= title %></h1>
+        <div class="panel panel-default panel-table">
+            <div class="panel-heading">
+                <div class="row">
+                 <div class="col col-xs-6">
+                   <h3 class="panel-title"></h3>
+                 </div>
+                 <div class="col col-xs-6 text-right">
+
+                 </div>
+                </div>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-bordered table-hover">
+                      <thead>
+                        <tr>
+                          <th scope="col" width="160px">
+                              #
+                          </th>
+                          <th scope="col">Título da Tarefa</th>
+                          <th scope="col">Início Estimado</th>
+                          <th scope="col">Status</th>
+                          <th scope="col">Projeto</th>
+                          <th scope="col">Progresso</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% _.each( tasks, function (task) { %>
+                            <tr>
+                              <th scope="row">
+                                  <a href="/task/<%= task.id %>" class="btn btn-sm btn-outline-warning btn-create"><i class="fa fa-eye"></i></a>
+                                  <a href="/task/edit/<%= task.id %>" class="btn btn-sm btn-outline-info btn-create"><i class="fa fa-pencil"></i></a>
+                              </th>
+                              <td><%= task.title %></td>
+                              <td><center><%= moment(task.estimated_start).format('DD/MM/YYYY') %></center></td>
+                              <td><center><%= task.status.name %></center></td>
+                              <td><%= task.project.name %></td>
+                              <td><center><%= task.progress_percentage + '%' %></center></td>
+                            </tr>
+                        <% }); %>
+                      </tbody>
+                    </table>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <ul class="pagination pull-right">
+                                <%- pagination %>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

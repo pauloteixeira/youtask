@@ -1,0 +1,46 @@
+<div class="">
+    <div class="row" v-if="!cloudSuccess">
+        <div class="container">
+            <h1><%= title %></h1>
+            <hr/>
+            <form id="task-form" action="/task/create" method="post">
+
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label for="name">Título da Tarefa</label>
+                      <input class="form-control" id="title" name="title" type="text" maxlength="150" placeholder="Digite o título da tarefa">
+                      <div id="v-title" class="invalid-feedback">Este campo é obrigatório.</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="body">Descrição da Tarefa</label>
+                        <textarea id="body" name="body" class="form-control" placeholder="Detalhe a tarefa"></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-12">
+                      <hr />
+                    <div class="form-group text-right">
+                        <input type="hidden" name="owner" value="<%= req.session.userId %>" />
+                        <input type="hidden" name="status" value="<%= status.id %>" />
+                        <input type="hidden" name="project" value="<%= projectId %>" />
+                        <input type="hidden" name="_csrf" value="<%- _csrf %>" />
+                      <a class="btn btn-outline-danger" href="/task">Cancel</a>
+                      <button type="submit" class="btn btn-dark">Salvar</button>
+                    </div>
+                  </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="/services/UserService.js"></script>
+<script src="/services/TaskService.js"></script>
+<script src="/handler/task.handler.js"></script>

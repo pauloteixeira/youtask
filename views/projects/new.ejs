@@ -1,0 +1,106 @@
+<div class="">
+    <div class="row" v-if="!cloudSuccess">
+        <div class="container">
+            <h1><%= title %></h1>
+            <hr/>
+            <form id="project-form" action="/project/create" method="post">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label for="name">Nome do Projeto</label>
+                    <input class="form-control" id="name" name="name" type="text" placeholder="Digite o nome do seu projeto">
+                    <div id="v-name" class="invalid-feedback">Este campo é obrigatório.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                      <label for="description">Descrição do Projeto</label>
+                      <textarea id="description" name="description" class="form-control"></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="estimated_start">Estimativa de Início</label>
+                    <input class="form-control date-input" id="estimated_start" name="estimated_start" type="text" placeholder="Digite a data estimada de início">
+                    <div id="v-estimated_start" class="invalid-feedback">Este campo é obrigatório e precisa conter um data válida.</div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="estimated_end">Estimativa de Término</label>
+                    <input class="form-control date-input" id="estimated_end" name="estimated_end" type="text" placeholder="Digite a data estimada de término">
+                    <div id="v-estimated_end" class="invalid-feedback">Este campo é obrigatório e precisa conter um data válida.</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="real_start">Início Real</label>
+                    <input class="form-control date-input" id="real_start" name="real_start" type="text" placeholder="Digite a data real do início">
+                    <div id="v-real_start" class="invalid-feedback">Este campo precisa ter uma data válida.</div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="real_end">Término Real</label>
+                    <input class="form-control date-input" id="real_end" name="real_end" type="text" placeholder="Digite a data real do término">
+                    <div id="v-real_end" class="invalid-feedback">Este campo precisa ter uma data válida.</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                      <label for="justification">Justificativa do Projeto</label>
+                      <textarea class="form-control" id="justification" name="justification" placeholder="Digite a justificativa do projeto"></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                      <label for="premisse">Premissa do Projeto</label>
+                      <textarea class="form-control" id="premisse" name="premisse" placeholder="Digite a premissa do projeto"></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                      <label for="restrictions">Restrições do Projeto</label>
+                      <textarea class="form-control" id="restrictions" name="restrictions" placeholder="Digite as restrições do projeto"></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-12">
+                    <hr />
+                  <div class="form-group text-right">
+                      <input type="hidden" name="owner" value="<%= req.session.userId %>" />
+                      <input type="hidden" name="state" value="<%= state.id %>" />
+                      <input type="hidden" name="_csrf" value="<%- _csrf %>" />
+                    <a class="btn btn-outline-danger" href="/project">Cancel</a>
+                    <button type="submit" class="btn btn-dark">Save changes</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="/services/UserService.js"></script>
+<script src="/services/ProjectService.js"></script>
+<script src="/services/TaskService.js"></script>
+<script src="/handler/project.handler.js"></script>

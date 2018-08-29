@@ -1,0 +1,115 @@
+<div class="">
+    <div class="row" v-if="!cloudSuccess">
+        <div class="container">
+            <h1><%= title %></h1>
+            <hr/>
+            <form id="project-form" action="/project/update" method="post">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label for="name">Nome do Projeto</label>
+                    <input class="form-control" id="name" name="name" type="text" placeholder="Digite o nome do seu projeto" value="<%= project.name %>">
+                    <div id="v-name" class="invalid-feedback">Este campo é obrigatório.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                      <label for="description">Descrição do Projeto</label>
+                      <textarea id="description" name="description" class="form-control"><%= project.description %></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="estimated_start">Estimativa de Início</label>
+                    <input class="form-control" id="estimated_start" name="estimated_start" type="text" placeholder="Digite a data estimada de início" value="<%= moment(project.estimated_start).format('DD/MM/YYYY') %>">
+                    <div id="v-estimated_start" class="invalid-feedback">Este campo é obrigatório e precisa conter um data válida.</div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="estimated_end">Estimativa de Término</label>
+                    <input class="form-control" id="estimated_end" name="estimated_end" type="text" placeholder="Digite a data estimada de término" value="<%= moment(project.estimated_end).format('DD/MM/YYYY') %>">
+                    <div id="v-estimated_end" class="invalid-feedback">Este campo é obrigatório e precisa conter um data válida.</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="real_start">Início Real</label>
+                    <input class="form-control" id="real_start" name="real_start" type="text" placeholder="Digite a data real do início" value="<%= (project.real_start) ? moment(project.real_start).format('DD/MM/YYYY') : '' %>">
+                    <div id="v-real_start" class="invalid-feedback">Este campo precisa ter uma data válida.</div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="real_end">Término Real</label>
+                    <input class="form-control" id="real_end" name="real_end" type="text" placeholder="Digite a data real do término" value="<%= (project.real_start) ? moment(project.real_end).format('DD/MM/YYYY') : '' %>">
+                    <div id="v-real_end" class="invalid-feedback">Este campo precisa ter uma data válida.</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                      <label for="justification">Justificativa do Projeto</label>
+                      <textarea class="form-control" id="justification" name="justification" placeholder="Digite a justificativa do projeto"><%= project.justification %></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                      <label for="premisse">Premissa do Projeto</label>
+                      <textarea class="form-control" id="premisse" name="premisse" placeholder="Digite a premissa do projeto"><%= project.premisse %></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                      <label for="restrictions">Restrições do Projeto</label>
+                      <textarea class="form-control" id="restrictions" name="restrictions" placeholder="Digite as restrições do projeto"><%= project.restrictions %></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                      <label for="last_informations">Considerações Finais</label>
+                      <textarea class="form-control" id="last_informations" name="last_informations" placeholder="Digite as considerações finais do projeto"><%= project.last_informations %></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-12">
+                    <hr />
+                  <div class="form-group text-right">
+                        <input type="hidden" name="owner" value="<%= project.owner.id %>" />
+                        <input type="hidden" name="state" value="<%= project.state.id %>" />
+                        <input type="hidden" name="_csrf" value="<%- _csrf %>" />
+                        <a class="btn btn-outline-danger" href="/project">Cancel</a>
+                        <button type="submit" class="btn btn-dark">Save changes</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="/services/UserService.js"></script>
+<script src="/services/ProjectService.js"></script>
+<script src="/services/TaskService.js"></script>
+<script src="/handler/project.handler.js"></script>

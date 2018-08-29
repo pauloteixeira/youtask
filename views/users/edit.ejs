@@ -1,0 +1,74 @@
+<div class="">
+    <div class="row" v-if="!cloudSuccess">
+        <div class="container">
+            <h1><%= title %></h1>
+            <hr/>
+            <form id="create-user" action="/user/update" method="post">
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="full-name">Nome Completo</label>
+                    <input class="form-control" id="name" name="name" type="text" placeholder="Digite seu nome" value="<%= user.name %>">
+                    <!-- div class="invalid-feedback">Please enter your full name.</div -->
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="email-address">Email</label>
+                    <input class="form-control" id="email" name="email" type="email" placeholder="Digite seu email" value="<%= user.email %>">
+                    <!-- div class="invalid-feedback" v-if="formErrors.emailAddress">Please enter a valid email address.</div -->
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="email-address">Senha</label>
+                      <input class="form-control" id="password" name="password" type="password" placeholder="Digite uma senha">
+                      <!-- div class="invalid-feedback" v-if="formErrors.emailAddress">Please enter a valid email address.</div -->
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                      <div class="form-group">
+                          <label for="email-address">Perfil de Acesso</label>
+                            <select class="form-control" id="profile-id" name="profile-id">
+                              <option>Selecione uma opção</option>
+                              <% _.each( profiles, function (profile) { %>
+                                  <option value="<%= profile.id %>"  <%= (user.profile.id == profile.id) ? 'selected' : '' %>><%= profile.name %></option>
+                              <% }); %>
+                            </select>
+                              <!-- div class="invalid-feedback" v-if="formErrors.emailAddress">Please enter a valid email address.</div -->
+                          </div>
+                      </div>
+              </div>
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-check form-check-inline">
+                            <div class="form-group">
+                                <label class="form-check-label" for="is_active">Ativar Usuário?</label>
+                                <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" <%= (user.is_active) ? 'checked' : '' %>>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              <div class="row">
+                <!-- div class="col-sm-6">
+                  <p class="text-danger" v-if="cloudError === 'emailAlreadyInUse'">There is already an account using that email address.</p>
+                  <p class="text-danger" v-else-if="cloudError">An error occured while processing your request. Please check your information and try again, or <a href="/contact">contact support</a> if the error persists.</p>
+              </div -->
+                <div class="col-sm-12">
+                    <hr />
+                  <div class="form-group text-right">
+                      <input type="hidden" name="_csrf" value="<%- _csrf %>" />
+                      <input type="hidden" name="id" value="<%= user.id %>" />
+                    <a class="btn btn-outline-danger" href="/user">Cancel</a>
+                    <button type="submit" class="btn btn-dark">Save changes</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+        </div>
+    </div>
+</div>

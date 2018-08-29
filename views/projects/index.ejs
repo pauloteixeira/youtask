@@ -1,0 +1,68 @@
+<div class="row">
+    <div class="container">
+        <h1><%= title %></h1>
+        <div class="panel panel-default panel-table">
+            <div class="panel-heading">
+                <div class="row">
+                 <div class="col col-xs-6">
+                   <h3 class="panel-title"></h3>
+                 </div>
+                 <div class="col col-xs-6 text-right">
+                   <a href="/project/new" class="btn btn-sm btn-default btn-create"><i class="fa fa-plus"></i> Novo</a>
+                 </div>
+                </div>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-bordered table-hover">
+                      <thead>
+                        <tr>
+                          <th scope="col" width="160px">
+                              #
+                          </th>
+                          <th scope="col">Nome do Projeto</th>
+                          <th scope="col">Início Estimado</th>
+                          <th scope="col">Término Estimado</th>
+                          <th scope="col">Status</th>
+                          <th scope="col">Cliente</th>
+                          <th scope="col">Progresso</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% _.each( projects, function (project) { %>
+                            <tr>
+                              <th scope="row">
+                                  <form id="project-view-delete-form" name="<%= project.id %>" action="/project/delete" method="post">
+                                      <input type="hidden" name="_csrf" value="<%- _csrf %>" />
+                                      <input type="hidden" name="id" value="<%= project.id %>" />
+                                      <a href="/project/<%= project.id %>" class="btn btn-sm btn-outline-warning btn-create"><i class="fa fa-eye"></i></a>
+                                      <a href="/task/p/<%= project.id %>" class="btn btn-sm btn-outline-success btn-create"><i class="fa fa-tasks"></i></a>
+                                      <a href="/project/edit/<%= project.id %>" class="btn btn-sm btn-outline-info btn-create"><i class="fa fa-pencil"></i></a>
+                                      <button id="project-delete" type="button" class="btn btn-sm btn-outline-danger btn-create"><i class="fa fa-trash"></i></button>
+                                  </form>
+                              </th>
+                              <td><%= project.name %></td>
+                              <td><center><%= moment(project.estimated_start).format('DD/MM/YYYY') %></center></td>
+                              <td><center><%= moment(project.estimated_end).format('DD/MM/YYYY') %></center></td>
+                              <td><center><%= project.state.name %></center></td>
+                              <td><%= project.owner.name %></td>
+                              <td><center><%= project.progress_percentage + '%' %></center></td>
+                            </tr>
+                        <% }); %>
+                      </tbody>
+                    </table>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <ul class="pagination pull-right">
+                                <%- pagination %>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/services/UserService.js"></script>
+<script src="/services/ProjectService.js"></script>
+<script src="/handler/project.handler.js"></script>
