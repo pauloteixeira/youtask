@@ -47,7 +47,14 @@ $ db.status.save([
 ])
 ```
 
-In the field profile you will need to insert the ObjectId of Administrador profile from profiles model and in the password you will need to insert a sha256 hashed password in base64
+In the field profile you will need to insert the ObjectId of Administrador profile from profiles model and in the password you will need to insert a sha256 hashed password in base64.
+
+P.S. The app use this lines to hash the password:
+
+```bash
+$ let crypto = require('crypto');
+$ crypto.createHash('sha256').update(YOUR PASSWORD STRING HERE).digest('base64');
+```
 ```bash
 $ db.users.save([
   {profile: ObjectId('hashid of administrador profile'), name: 'Administrador', email: 'email@administrador', password: 'sha256 hashad password', is_active: true}
